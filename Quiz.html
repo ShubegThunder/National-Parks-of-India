@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>National Parks Quiz</title>
+</head>
+<body>
+  <nav>
+    <h2>🌏 National Parks</h2>
+    <ul>
+      <li><a href="index.html">The suitcase packed</a></li>
+      <li><a href="Corbett.html">Jim Corbett National Park</a></li>
+      <li><a href="Ranthambore.html">Ranthambore National Park</a></li>
+      <li><a href="Kaziranga.html">Kaziranga National Park</a></li>
+      <li><a href="Sundarbans.html">Sundarbans National Park</a></li>
+      <li><a href="Bandhavgarh.html">Bandhavgarh National Park</a></li>
+      <li><a href="Kanha.html">Kanha National Park</a></li>
+      <li><a href="Gir.html">Gir National Park</a></li>
+      <li><a href="Pench.html">Pench National Park</a></li>
+      <li><a href="Periyar.html">Periyar National Park</a></li>
+      <li><a href="Manas.html">Manas National Park</a></li>
+      <li><a href="Nagarhole.html">Nagarhole National Park</a></li>
+      <li><a href="Bandipur.html">Bandipur National Park</a></li>
+      <li><a href="Tadoba.html">Tadoba National Park</a></li>
+      <li><a href="Valley.html">Valley of Flowers</a></li>
+      <li><a href="Hemis.html">Hemis National Park</a></li>
+      <li><a href="Silent.html">Silent Valley National Park</a></li>
+      <li><a href="Keoladeo.html">Keoladeo National Park</a></li>
+      <li><a href="Satpura.html">Satpura National Park</a></li>
+      <li><a href="Bannerghatta.html">Bannerghatta National Park</a></li>
+      <li><a href="Rajaji.html">Rajaji National Park</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h1>📝 National Parks Quiz</h1>
+    <div id="quiz-container">
+      <div id="question"></div>
+      <div id="options"></div>
+      <button id="next-btn" style="display:none;">Next</button>
+      <div id="score" style="margin-top:20px;font-weight:bold;"></div>
+    </div>
+  </main>
+
+  <script>
+    const quizData = [
+      {
+        question: "Which state is Jim Corbett National Park located in?",
+        options: ["Uttarakhand", "Madhya Pradesh", "Rajasthan", "Kerala"],
+        answer: "Uttarakhand"
+      },
+      {
+        question: "Kaziranga National Park is famous for which animal?",
+        options: ["One-horned rhinoceros", "Tiger", "Elephant", "Snow Leopard"],
+        answer: "One-horned rhinoceros"
+      },
+      {
+        question: "Which national park is a UNESCO World Heritage Site and located in West Bengal?",
+        options: ["Sundarbans National Park", "Pench National Park", "Manas National Park", "Gir National Park"],
+        answer: "Sundarbans National Park"
+      },
+      {
+        question: "Gir National Park is the last refuge of which species?",
+        options: ["Asiatic Lion", "Bengal Tiger", "Leopard", "Sloth Bear"],
+        answer: "Asiatic Lion"
+      },
+      {
+        question: "Valley of Flowers is famous for?",
+        options: ["Alpine flowers and scenic beauty", "Desert landscapes", "Coral reefs", "Sand dunes"],
+        answer: "Alpine flowers and scenic beauty"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const nextBtn = document.getElementById('next-btn');
+    const scoreEl = document.getElementById('score');
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionEl.textContent = q.question;
+      optionsEl.innerHTML = "";
+      q.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.textContent = option;
+        btn.classList.add('option-btn');
+        btn.onclick = () => selectAnswer(option);
+        optionsEl.appendChild(btn);
+      });
+      nextBtn.style.display = "none";
+    }
+
+    function selectAnswer(selected) {
+      const correct = quizData[currentQuestion].answer;
+      if (selected === correct) {
+        score++;
+        scoreEl.textContent = "✅ Correct!";
+      } else {
+        scoreEl.textContent = `❌ Wrong! Correct answer: ${correct}`;
+      }
+      Array.from(optionsEl.children).forEach(btn => btn.disabled = true);
+      nextBtn.style.display = "block";
+    }
+
+    nextBtn.addEventListener('click', () => {
+      currentQuestion++;
+      scoreEl.textContent = "";
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        endQuiz();
+      }
+    });
+
+    function endQuiz() {
+      questionEl.textContent = "🎉 Quiz Complete!";
+      optionsEl.innerHTML = `Your score: ${score} / ${quizData.length}`;
+      nextBtn.style.display = "none";
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>

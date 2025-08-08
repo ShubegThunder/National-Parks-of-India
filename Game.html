@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Rock+Salt&family=Gloria+Hallelujah&family=Permanent+Marker&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<title>National Parks Matching Game</title>
+</head>
+<body>
+
+<!-- Sidebar -->
+<nav>
+  <h2>🌏 National Parks</h2>
+  <ul>
+    <ul>
+      <li><a href="index.html">The suitcase packed</a></li>
+      <li><a href="Corbett.html">Jim Corbett National Park</a></li>
+      <li><a href="Ranthambore.html">Ranthambore National Park</a></li>
+      <li><a href="Kaziranga.html">Kaziranga National Park</a></li>
+      <li><a href="Sundarbans.html">Sundarbans National Park</a></li>
+      <li><a href="Bandhavgarh.html">Bandhavgarh National Park</a></li>
+      <li><a href="Kanha.html">Kanha National Park</a></li>
+      <li><a href="Gir.html">Gir National Park</a></li>
+      <li><a href="Pench.html">Pench National Park</a></li>
+      <li><a href="Periyar.html">Periyar National Park</a></li>
+      <li><a href="Manas.html">Manas National Park</a></li>
+      <li><a href="Nagarhole.html">Nagarhole National Park</a></li>
+      <li><a href="Bandipur.html">Bandipur National Park</a></li>
+      <li><a href="Tadoba.html">Tadoba National Park</a></li>
+      <li><a href="Valley.html">Valley of Flowers</a></li>
+      <li><a href="Hemis.html">Hemis National Park</a></li>
+      <li><a href="Silent.html">Silent Valley National Park</a></li>
+      <li><a href="Keoladeo.html">Keoladeo National Park</a></li>
+      <li><a href="Satpura.html">Satpura National Park</a></li>
+      <li><a href="Bannerghatta.html">Bannerghatta National Park</a></li>
+      <li><a href="Rajaji.html">Rajaji National Park</a></li>
+    </ul>
+  </ul>
+</nav>
+
+
+<!-- Main Content -->
+<main>
+  <h1>🎯 Match the National Park to Its State</h1>
+  <p class="subtitle">Click a park, then click a state to connect them.</p>
+
+  <div class="match-container" id="matchArea">
+    <div class="match-column" id="parks"></div>
+    <svg id="lines"></svg>
+    <div class="match-column" id="states"></div>
+  </div>
+
+  <button onclick="checkMatches()">Check Answers</button>
+</main>
+
+<script>
+const parks = [
+  {name: 'Jim Corbett National Park', state: 'Uttarakhand'},
+  {name: 'Ranthambore National Park', state: 'Rajasthan'},
+  {name: 'Kaziranga National Park', state: 'Assam'},
+  {name: 'Sundarbans National Park', state: 'West Bengal'},
+  {name: 'Bandhavgarh National Park', state: 'Madhya Pradesh'},
+  {name: 'Kanha National Park', state: 'Madhya Pradesh'},
+  {name: 'Gir National Park', state: 'Gujarat'},
+  {name: 'Pench National Park', state: 'Madhya Pradesh/Maharashtra'},
+  {name: 'Periyar National Park', state: 'Kerala'},
+  {name: 'Manas National Park', state: 'Assam'},
+  {name: 'Nagarhole National Park', state: 'Karnataka'},
+  {name: 'Bandipur National Park', state: 'Karnataka'},
+  {name: 'Tadoba National Park', state: 'Maharashtra'},
+  {name: 'Valley of Flowers', state: 'Uttarakhand'},
+  {name: 'Hemis National Park', state: 'Ladakh'},
+  {name: 'Silent Valley National Park', state: 'Kerala'},
+  {name: 'Keoladeo National Park', state: 'Rajasthan'},
+  {name: 'Satpura National Park', state: 'Madhya Pradesh'},
+  {name: 'Bannerghatta National Park', state: 'Karnataka'},
+  {name: 'Rajaji National Park', state: 'Uttarakhand'}
+];
+
+let selectedPark = null;
+let connections = [];
+
+function setupGame() {
+  const parksCol = document.getElementById('parks');
+  const statesCol = document.getElementById('states');
+  const shuffledParks = [...parks].sort(() => Math.random() - 0.5);
+  const shuffledStates = [...new Set(parks.map(p => p.state))].sort(() => Math.random() - 0.5);
+
+  parksCol.innerHTML = shuffledParks.map(p =>
+    `<div class="item" data-type="park" data-name="${p.name}">${p.name}</div>`).join('');
+
+  statesCol.innerHTML = shuffledStates.map(s =>
+    `<div class="item" data-type="state" data-name="${s}">${s}</div>`).join('');
+
+  document.querySelectorAll('.item').forEach(el => {
+    el.addEventListener('click', handleClick);
+  });
+}
+
+function handleClick(e) {
+  const el = e.target;
+  if (el.dataset.type === 'park') {
+    document.querySelectorAll('.item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPark = el;
+  } else if (el.dataset.type === 'state' && selectedPark) {
+    connectItems(selectedPark, el);
+    selectedPark.classList.remove('selected');
+    selectedPark = null;
+  }
+}
+
+function connectItems(parkEl, stateEl) {
+  const svg = document.getElementById('lines');
+  const parkRect = parkEl.getBoundingClientRect();
+  const stateRect = stateEl.getBoundingClientRect();
+  const containerRect = document.getElementById('matchArea').getBoundingClientRect();
+
+  const x1 = parkRect.right - containerRect.left;
+  const y1 = parkRect.top + parkRect.height / 2 - containerRect.top;
+  const x2 = stateRect.left - containerRect.left;
+  const y2 = stateRect.top + stateRect.height / 2 - containerRect.top;
+
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  line.setAttribute("x1", x1);
+  line.setAttribute("y1", y1);
+  line.setAttribute("x2", x2);
+  line.setAttribute("y2", y2);
+  line.setAttribute("stroke", "black");
+  line.setAttribute("stroke-width", "2");
+  svg.appendChild(line);
+
+  connections.push({park: parkEl.dataset.name, state: stateEl.dataset.name, parkEl, stateEl});
+}
+
+function checkMatches() {
+  connections.forEach(conn => {
+    const correctState = parks.find(p => p.name === conn.park)?.state;
+    if (conn.state === correctState) {
+      conn.parkEl.classList.add('correct');
+      conn.stateEl.classList.add('correct');
+    } else {
+      conn.parkEl.classList.add('wrong');
+      conn.stateEl.classList.add('wrong');
+    }
+  });
+}
+
+setupGame();
+</script>
+
+</body>
+</html>
